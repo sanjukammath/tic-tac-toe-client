@@ -6,7 +6,11 @@ export default () => {
   return (
     <Menu style={{ marginTop: "10px" }}>
       <Link className="item" to="/">
-        Tic Tac Toe
+        Bids
+      </Link>
+
+      <Link className="item" to="/games">
+        Games
       </Link>
 
       <Menu.Menu position="right">
@@ -14,7 +18,7 @@ export default () => {
           Tokens
         </Link>
 
-        <Link className="item" to="/tictactoe/bid/new">
+        <Link className="item" to="/bids/new">
           +
         </Link>
       </Menu.Menu>
