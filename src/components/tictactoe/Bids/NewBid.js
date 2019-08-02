@@ -30,6 +30,7 @@ class NewBid extends Component {
             <CheckAllowance token={token} game={game} />
           </List.Item>
           <Divider />
+          <h4>Enter bid details</h4>
           <List.Item>
             <BidForm token={token} game={game} />
           </List.Item>

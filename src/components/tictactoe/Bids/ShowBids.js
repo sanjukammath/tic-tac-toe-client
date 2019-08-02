@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Table, Divider } from "semantic-ui-react";
+import { Table, Divider, Button, Input } from "semantic-ui-react";
+import { Link } from "react-router-dom";
 
 import Layout from "../../Layout";
 import Bid from "./Bid";
@@ -7,7 +8,8 @@ import Bid from "./Bid";
 class ShowBids extends Component {
   state = {
     game: {},
-    bids: []
+    bids: [],
+    id: 0
   };
   renderRows = () => {
     return this.state.bids.map((bid, index) => {
@@ -48,6 +50,7 @@ class ShowBids extends Component {
   render() {
     const { Header, Row, HeaderCell, Body } = Table;
     const { token, game } = this.props;
+    const { id } = this.state;
     return (
       <Layout>
         <h3>TicTacToe</h3>
@@ -57,17 +60,29 @@ class ShowBids extends Component {
           {" " + game.address}.
         </p>
         <Divider />
+        <h4>Available Bids</h4>
         <Table>
           <Header>
             <Row>
               <HeaderCell>ID</HeaderCell>
               <HeaderCell>Bidder</HeaderCell>
               <HeaderCell>Stake</HeaderCell>
-              <HeaderCell>Bid Time Out</HeaderCell>
+              <HeaderCell />
             </Row>
           </Header>
           <Body>{this.renderRows()}</Body>
         </Table>
+        <Divider />
+        <h4>Looking for specific bid? Search by ID</h4>
+        <Input
+          value={id}
+          onChange={event => this.setState({ id: event.target.value })}
+        />
+        <br />
+        <br />
+        <Link to={`/bids/${id}`}>
+          <Button primary>Get Details</Button>
+        </Link>
       </Layout>
     );
   }
