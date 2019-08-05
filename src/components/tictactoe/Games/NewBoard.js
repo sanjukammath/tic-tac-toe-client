@@ -19,10 +19,10 @@ class NewGame extends Component {
 
   makeBoard = board => {
     const map = board.map((element, index) => {
-      if (parseInt(element) === 1) {
+      if (element === 1) {
         return "x";
       }
-      if (parseInt(element) === 2) {
+      if (element === 2) {
         return "circle outline";
       }
       return "";
@@ -47,13 +47,12 @@ class NewGame extends Component {
   async componentDidMount() {
     const { game, id } = this.props;
     console.log(game, id);
-    if (game.bids) {
+    if (game.numberOfGames) {
       const board = await game.getBoard(id);
       const map = this.makeBoard(board);
       const details = await game.getGameDetails(id);
       const gameState = parseInt(details[2]);
       this.setState({ game, board, map, id, gameState });
-      console.log(board);
     }
   }
 
@@ -97,10 +96,6 @@ class NewGame extends Component {
     } = this.state;
 
     return gameState === 0 ? (
-      <div>
-        This game has not been started. Go to bid details to create the game.
-      </div>
-    ) : (
       <div className="ui container">
         <h3>Board</h3>
         <Segment>
@@ -160,6 +155,11 @@ class NewGame extends Component {
         ) : (
           <div />
         )}
+      </div>
+    ) : (
+      <div>
+        This game has already been started. To see current progress Click on Go
+        to Game.
       </div>
     );
   }

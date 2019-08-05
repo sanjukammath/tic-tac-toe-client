@@ -46,6 +46,7 @@ class InspectBid extends Component {
     try {
       await game.accept(id, { from: accounts[0] });
       this.setState({ successMessage: "The bid has been accepted" });
+      this.getBid(game);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -157,7 +158,7 @@ class InspectBid extends Component {
                     <br />
                   )}
                 </Card.Content>
-              ) : (
+              ) : parseInt(state) === 1 ? (
                 <Card.Content extra>
                   <div className="ui two buttons">
                     <Button basic color="green">
@@ -193,6 +194,10 @@ class InspectBid extends Component {
                     <br />
                   )}
                 </Card.Content>
+              ) : (
+                <Card.Content extra>
+                  This bid has been closed and disbursed
+                </Card.Content>
               )}
             </Card>
           ) : (
@@ -201,7 +206,11 @@ class InspectBid extends Component {
         ) : (
           <div>loading...</div>
         )}
-        {showGame ? <NewGame game={game} id={id} /> : <div />}
+        {showGame ? (
+          <NewGame game={game} id={id} callback={this.getBid} />
+        ) : (
+          <div />
+        )}
       </Layout>
     );
   }

@@ -13,7 +13,7 @@ class ApproveContract extends Component {
   approveContract = async event => {
     event.preventDefault();
 
-    this.setState({ approveLoading: true });
+    this.setState({ approveLoading: true, approve: "", approveError: "" });
     try {
       const accounts = await web3.eth.getAccounts();
       const { game, token } = this.props;
