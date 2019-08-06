@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Grid, Segment, Icon, Button, Message } from "semantic-ui-react";
+import { Redirect } from "react-router-dom";
 
 import web3 from "../../../web3";
 
@@ -92,8 +93,13 @@ class NewGame extends Component {
       gameState,
       errorMessage,
       successMessage,
-      loading
+      loading,
+      id
     } = this.state;
+
+    if (gameState > 0) {
+      return <Redirect to={`/games/${id}`} />;
+    }
 
     return gameState === 0 ? (
       <div className="ui container">

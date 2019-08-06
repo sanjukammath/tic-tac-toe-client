@@ -41,7 +41,6 @@ class InspectGame extends Component {
     const { game, id } = this.state;
     return (
       <Layout>
-        <div>InspectGame</div>
         {game.bids ? <Board game={game} id={id} /> : <div>loading...</div>}
       </Layout>
     );

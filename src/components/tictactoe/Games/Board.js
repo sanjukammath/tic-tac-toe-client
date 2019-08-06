@@ -8,6 +8,7 @@ class NewGame extends Component {
     game: {},
     board: [],
     map: [],
+    details: {},
     selectRow: 0,
     selectCol: 0,
     id: 0,
@@ -22,7 +23,7 @@ class NewGame extends Component {
       if (parseInt(element) === 1) {
         return "x";
       }
-      if (parseInt(element) === 2) {
+      if (parseInt(element) === -1) {
         return "circle outline";
       }
       return "";
@@ -37,7 +38,7 @@ class NewGame extends Component {
         return 1;
       }
       if (element === "circle outline") {
-        return 2;
+        return -1;
       }
       return 0;
     });
@@ -46,38 +47,65 @@ class NewGame extends Component {
 
   async componentDidMount() {
     const { game, id } = this.props;
-    console.log(game, id);
     if (game.bids) {
       const board = await game.getBoard(id);
       const map = this.makeBoard(board);
       const details = await game.getGameDetails(id);
       const gameState = parseInt(details[2]);
-      this.setState({ game, board, map, id, gameState });
-      console.log(board);
+      this.setState({ game, board, map, id, gameState, details });
     }
   }
 
   handle = (selectRow, selectCol) => () => {
     const index = selectRow * 3 + selectCol;
     const map = this.makeBoard(this.state.board);
+    const { details } = this.state;
+    const X = details[0];
+    const O = details[1];
+    const L = details[5];
 
-    map[index] = "x";
+    if (L === X) {
+      map[index] = "circle outline";
+    } else if (L === O) {
+      map[index] = "x";
+    }
+
     this.setState({ map, selectRow, selectCol });
   };
 
   onSubmit = async () => {
     const { game, id, selectRow, selectCol } = this.state;
-    const { callback } = this.props;
     this.setState({ loading: true, errorMessage: "", successMessage: "" });
     try {
       const accounts = await web3.eth.getAccounts();
-      await game.start(id, selectRow, selectCol, { from: accounts[0] });
-      this.setState({
-        successMessage:
-          "Game has started. Click on Go to Game to see the Game Progress",
-        loading: false
-      });
-      callback(game);
+      await game.play(id, selectRow, selectCol, { from: accounts[0] });
+      const board = await game.getBoard(id);
+      const map = this.makeBoard(board);
+      const details = await game.getGameDetails(id);
+      const gameState = parseInt(details[2]);
+      this.setState({ game, board, map, id, gameState, details });
+      const L = details[5];
+      const W = details[4];
+      if (gameState > 3) {
+        if (L === W) {
+          this.setState({
+            successMessage:
+              "You have won! You can claim your winnings or refunds in the payout page",
+            loading: false
+          });
+        } else {
+          this.setState({
+            successMessage:
+              "The game has drawn. You can claim your winnings or refunds in the payout page",
+            loading: false
+          });
+        }
+      } else {
+        this.setState({
+          successMessage: "Your play has been recorded on chain",
+          loading: false
+        });
+      }
     } catch (err) {
       this.setState({ errorMessage: err.message, loading: false });
     }
@@ -93,9 +121,10 @@ class NewGame extends Component {
       gameState,
       errorMessage,
       successMessage,
-      loading
+      loading,
+      details
     } = this.state;
-
+    const lastTurn = details[5];
     return gameState === 0 ? (
       <div>
         This game has not been started. Go to bid details to create the game.
@@ -103,6 +132,7 @@ class NewGame extends Component {
     ) : (
       <div className="ui container">
         <h3>Board</h3>
+        <p>Last Turn: {lastTurn}</p>
         <Segment>
           <Grid columns={3} celled="internally">
             <Grid.Row textAlign="center">
@@ -140,9 +170,17 @@ class NewGame extends Component {
             </Grid.Row>
           </Grid>
         </Segment>
-        <Button primary onClick={this.onSubmit} loading={loading}>
-          Submit
-        </Button>
+        {gameState < 3 ? (
+          <Button primary onClick={this.onSubmit} loading={loading}>
+            Submit
+          </Button>
+        ) : gameState === 5 ? (
+          <p>This game was won by {lastTurn} </p>
+        ) : gameState === 4 ? (
+          <p>This game resulted in a draw </p>
+        ) : (
+          <p>The game was withdrawn</p>
+        )}
         {errorMessage ? (
           <Message
             error

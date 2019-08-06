@@ -196,7 +196,8 @@ class InspectBid extends Component {
                 </Card.Content>
               ) : (
                 <Card.Content extra>
-                  This bid has been closed and disbursed
+                  This bid has been closed and disbursed. To claim any tokens go
+                  to payout page.
                 </Card.Content>
               )}
             </Card>
