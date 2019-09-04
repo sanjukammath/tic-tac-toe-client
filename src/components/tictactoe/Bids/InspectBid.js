@@ -61,6 +61,7 @@ class InspectBid extends Component {
     try {
       await game.timeOut(id, { from: accounts[0] });
       this.setState({ successMessage: "The bid has been cancelled" });
+      this.getBid(game);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }

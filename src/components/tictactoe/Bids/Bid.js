@@ -8,14 +8,15 @@ class Bid extends Component {
     //console.log(bid);
     const { Row, Cell } = Table;
     const { id, bidder, value } = bid;
+    const parsed = parseInt(id);
     //const d = new Date(startDate * 1000);
     return (
       <Row>
-        <Cell>{id + ""}</Cell>
+        <Cell>{parsed + ""}</Cell>
         <Cell>{bidder}</Cell>
         <Cell>{parseInt(value)}</Cell>
         <Cell>
-          <Link to={`/bids/${id}`}>
+          <Link to={`/bids/${parsed}`}>
             <Button primary>Details</Button>
           </Link>
         </Cell>

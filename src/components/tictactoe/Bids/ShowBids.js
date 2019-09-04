@@ -38,8 +38,8 @@ class ShowBids extends Component {
           return game.openBids(index);
         })
     );
-    const promises = bidIndex.map(async index => {
-      const response = await game.bids(index);
+    const promises = bidIndex.map(async (element, index) => {
+      const response = await game.bids(parseInt(element));
       return response;
     });
 

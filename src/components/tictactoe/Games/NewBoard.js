@@ -47,11 +47,10 @@ class NewGame extends Component {
 
   async componentDidMount() {
     const { game, id } = this.props;
-    console.log(game, id);
     if (game.numberOfGames) {
-      const board = await game.getBoard(id);
+      const board = await game.getBoard(parseInt(id));
       const map = this.makeBoard(board);
-      const details = await game.getGameDetails(id);
+      const details = await game.getGameDetails(parseInt(id));
       const gameState = parseInt(details[2]);
       this.setState({ game, board, map, id, gameState });
     }
@@ -71,7 +70,9 @@ class NewGame extends Component {
     this.setState({ loading: true, errorMessage: "", successMessage: "" });
     try {
       const accounts = await web3.eth.getAccounts();
-      await game.start(id, selectRow, selectCol, { from: accounts[0] });
+      await game.start(parseInt(id), selectRow, selectCol, {
+        from: accounts[0]
+      });
       this.setState({
         successMessage:
           "Game has started. Click on Go to Game to see the Game Progress",
